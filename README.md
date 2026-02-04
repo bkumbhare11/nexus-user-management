@@ -5,7 +5,7 @@ Nexus Admin is a professional-grade User Management System built with **React**,
 ---
 
 ## 📸 Preview
-![Dashboard Preview](./screenshots/dashboard.jpg)
+![Dashboard Preview](./screenshot/dashboard.jpg)
 
 ---
 
@@ -31,7 +31,7 @@ Nexus Admin is a professional-grade User Management System built with **React**,
 ## 🚀 Getting Started
 1. **Clone the repo**:
    ```bash
-   git clone [PASTE_YOUR_REPO_LINK_HERE]
+   git clone [https://github.com/bkumbhare11/nexus-user-management.git]
 2. Install dependencies
    npm install
 
