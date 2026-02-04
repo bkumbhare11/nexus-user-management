@@ -33,7 +33,34 @@ Nexus Admin is a professional-grade User Management System built with **React**,
    ```bash
    git clone [https://github.com/bkumbhare11/nexus-user-management.git]
 2. Install dependencies
-   npm install
+   ```bash
+   [npm install]
 
-3. Run the project
-   npm run dev
+4. Run the project
+   ```bash
+   [npm run dev]
+
+---
+
+## 🌐 Live Demo
+
+You can access the live application here:  
+🚀 **[Nexus Admin Live Dashboard](APNI_VERCEL_LINK_YAHAN_PASTE_KARO)**
+
+---
+
+### 🔑 Demo Login Credentials
+Use these credentials to test the administrative features:
+* **Email:** `admin@nexus.com`
+* **Password:** `123456`
+
+## 🤝 Let's Connect!
+
+I'm currently looking for new opportunities and would love to connect. If you have any feedback or just want to say hi, feel free to reach out!
+
+* **LinkedIn**: [https://www.linkedin.com/in/YOUR_PROFILE]([https://www.linkedin.com/in/YOUR_PROFILE](https://nexus-user-management.vercel.app/login))
+* **Portfolio**: [YOUR_PORTFOLIO_LINK_IF_ANY]
+* **Email**: bhaveshkumbhare18@gmail.com
+
+---
+**Show your support by giving a ⭐ to this repository!**
