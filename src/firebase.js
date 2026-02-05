@@ -3,12 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAc0u-Q2VymIxMJ0tRfGkJJTjItZWUJO5U",
-  authDomain: "nexus-d0428.firebaseapp.com",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: "nexus-d0428",
-  storageBucket: "nexus-d0428.firebasestorage.app",
-  messagingSenderId: "556840653591",
-  appId: "1:556840653591:web:cd4ec11f266534fc2b5d52",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
