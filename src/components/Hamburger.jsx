@@ -28,7 +28,6 @@ function Hamburger() {
       <SheetContent side="left" className="w-64">
         <SheetHeader className="text-left pb-6 border-b border-slate-50">
           <div className="flex items-center gap-3">
-            {/* Wahi Logo Icon jo Sidebar mein use kiya tha */}
             <div className="h-9 w-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-100">
               <span className="text-white text-xl font-black">N</span>
             </div>
