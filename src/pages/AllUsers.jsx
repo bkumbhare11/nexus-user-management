@@ -38,6 +38,7 @@ import toast from "react-hot-toast";
 import NoDataFound from "@/components/NoDataFound";
 import ContentLoader from "@/components/ContentLoader";
 import config from "@/utils/constants";
+import { auth } from "@/firebase";
 
 function AllUsers() {
   const dispatch = useDispatch();
@@ -45,17 +46,23 @@ function AllUsers() {
   const users = useSelector((state) => state.user.users);
   const isLoading = useSelector((state) => state.user.isLoading);
 
-  function handleDelete(id) {
-    axios
-      .delete(`${config.url}/users/${id}.json`)
-      .then(() => {
-        toast.success("User Deleted");
-        dispatch(deleteUser(id));
-      })
-      .catch((err) => {
-        console.log(err);
+  async function handleDelete(id) {
+    try {
+      const token = await auth.currentUser.getIdToken();
+
+      await axios.delete(`${config.url}/users/${id}.json?auth=${token}`);
+
+      toast.success("User Deleted");
+      dispatch(deleteUser(id));
+    } catch (err) {
+      console.error("Delete Error:", err);
+
+      if (err.response?.status === 401) {
+        toast.error("Unauthorized: Please login again");
+      } else {
         toast.error("Error Deleting User");
-      });
+      }
+    }
   }
 
   function handleEdit(user) {
@@ -63,18 +70,27 @@ function AllUsers() {
     navigate(`/edituser/${user.id}`);
   }
 
-  function handleStatus(user) {
+  async function handleStatus(user) {
     const userStatus = user.status === "Active" ? "Inactive" : "Active";
-    axios
-      .patch(`${config.url}/users/${user.id}.json`, { status: userStatus })
-      .then(() => {
-        dispatch(toggleStatus(user.id));
-        toast.success(`User is now ${userStatus}`);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Update fail ho gaya");
+
+    try {
+      const token = await auth.currentUser.getIdToken();
+
+      await axios.patch(`${config.url}/users/${user.id}.json?auth=${token}`, {
+        status: userStatus,
       });
+
+      dispatch(toggleStatus(user.id));
+      toast.success(`User is now ${userStatus}`);
+    } catch (err) {
+      console.error("Status Update Error:", err);
+
+      if (err.response?.status === 401) {
+        toast.error("Session expired, please login again");
+      } else {
+        toast.error("Update fail ho gaya");
+      }
+    }
   }
 
   const [searchVal, setSearchVal] = useState("");

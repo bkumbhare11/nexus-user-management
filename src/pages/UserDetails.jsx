@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { setSelectedUser, deleteUser } from "@/features/userSlice";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { auth } from "@/firebase";
+import config from "@/utils/constants";
 
 function UserDetails() {
   let URL = "https://nexus-d0428-default-rtdb.firebaseio.com";
@@ -21,18 +23,25 @@ function UserDetails() {
     navigate(`/edituser/${userDetails.id}`);
   }
 
-  function handleDelete(id) {
-    axios
-      .delete(`${URL}/users/${id}.json`)
-      .then(() => {
-        toast.success("User Deleted");
-        dispatch(deleteUser(id));
-        navigate("/allusers");
-      })
-      .catch((err) => {
-        console.log(err);
+  async function handleDelete(id) {
+    try {
+      const token = await auth.currentUser.getIdToken();
+
+      await axios.delete(`${config.url}/users/${id}.json?auth=${token}`);
+
+      toast.success("User Deleted");
+      dispatch(deleteUser(id));
+
+      navigate("/allusers");
+    } catch (err) {
+      console.error("Delete Error:", err);
+
+      if (err.response?.status === 401) {
+        toast.error("Session expired, please login again");
+      } else {
         toast.error("Error Deleting User");
-      });
+      }
+    }
   }
 
   return (

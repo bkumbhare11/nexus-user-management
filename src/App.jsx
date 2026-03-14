@@ -46,10 +46,13 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (adminData) {
-      axios
-        .get(`${config.url}/users.json`)
-        .then((res) => {
+    const fetchUsers = async () => {
+      if (adminData) {
+        try {
+          const token = await auth.currentUser.getIdToken();
+
+          const res = await axios.get(`${config.url}/users.json?auth=${token}`);
+
           if (res.data) {
             let usersArray = [];
             for (let key in res.data) {
@@ -58,15 +61,17 @@ function App() {
                 ...res.data[key],
               });
             }
-
             dispatch(getUser(usersArray));
           }
-        })
-        .catch((err) => console.log("Fetch error:", err))
-        .finally(() => {
+        } catch (err) {
+          console.log("Fetch error:", err);
+        } finally {
           dispatch(setUserLoading(false));
-        });
-    }
+        }
+      }
+    };
+
+    fetchUsers();
   }, [adminData, dispatch]);
 
   if (loading) {

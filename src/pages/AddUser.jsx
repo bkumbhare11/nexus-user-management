@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import config from "@/utils/constants";
+import { auth } from "@/firebase";
 
 function AddUser() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function AddUser() {
 
   const { register, reset, handleSubmit } = useForm();
 
-  function OnSubmit(data) {
+  async function OnSubmit(data) {
     if (!selectedUser && users.length >= config.capacity) {
       toast.error(`Limit Reached!! Max ${config.capacity} users allowed`);
       return;
@@ -27,46 +28,51 @@ function AddUser() {
 
     setLoading(true);
 
-    if (selectedUser) {
-      axios
-        .patch(`${config.url}/users/${selectedUser.id}.json`, data)
-        .then(() => {
-          dispatch(updateUser({ id: selectedUser.id, ...data }));
-          console.log("User Updated & Saved");
-          setLoading(false);
-          navigate("/allusers");
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Error Updatind");
-        });
-    } else {
-      axios
-        .post(`${config.url}/users.json`, {
+    try {
+      const token = await auth.currentUser.getIdToken();
+
+      if (selectedUser) {
+        await axios.patch(
+          `${config.url}/users/${selectedUser.id}.json?auth=${token}`,
+          data,
+        );
+
+        dispatch(updateUser({ id: selectedUser.id, ...data }));
+        toast.success("User Updated Successfully");
+        navigate("/allusers");
+      } else {
+        const payload = {
           ...data,
           createdAt: Date.now(),
           status: "Active",
-        })
-        .then((res) => {
-          dispatch(
-            addUser({
-              ...data,
-              id: res.data.name,
-              createdAt: Date.now(),
-              status: "Active",
-            }),
-          );
-          toast.success("Data Saved");
-          reset();
-          navigate("/allusers");
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Error Saving Data");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        };
+
+        const res = await axios.post(
+          `${config.url}/users.json?auth=${token}`,
+          payload,
+        );
+
+        dispatch(
+          addUser({
+            ...payload,
+            id: res.data.name,
+          }),
+        );
+
+        toast.success("Data Saved Successfully");
+        reset();
+        navigate("/allusers");
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+
+      if (err.response?.status === 401) {
+        toast.error("Session Expired. Please Login again.");
+      } else {
+        toast.error(selectedUser ? "Error Updating Data" : "Error Saving Data");
+      }
+    } finally {
+      setLoading(false);
     }
   }
 
